@@ -5,4 +5,4 @@ __pycache__
 .pytest_cache
 .env
 venv/
-run_image.sh
+run_container.sh

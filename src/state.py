@@ -9,7 +9,6 @@ class State:
     by_day_fingerprint: Dict[str, str]
 
 
-
 def load_state(path: str) -> State:
     p = Path(path)
     if not p.exists():
@@ -21,7 +20,6 @@ def load_state(path: str) -> State:
 
     data = json.loads(content)
     return State(by_day_fingerprint=data.get("by_day_fingerprint", {}))
-
 
 
 def save_state(path: str, state: State) -> None:

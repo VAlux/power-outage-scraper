@@ -15,7 +15,9 @@ class CalendarServiceUnavailable(CalendarSyncError):
 
 
 class AppleCalendarSync:
-    def __init__(self, url: str, user: str, password: str, calendar_name: str, event_prefix: str):
+    def __init__(
+        self, url: str, user: str, password: str, calendar_name: str, event_prefix: str
+    ):
         if not user or not password:
             raise CalendarSyncError("CALDAV_USER and CALDAV_PASSWORD are required")
         self.client = caldav.DAVClient(url=url, username=user, password=password)
@@ -39,7 +41,9 @@ class AppleCalendarSync:
             raise CalendarSyncError(f"CalDAV request failed: {message}") from exc
         raise CalendarSyncError(f"Calendar '{self.calendar_name}' not found")
 
-    def _build_event(self, day: date, start_dt: datetime, end_dt: datetime, queue: str) -> bytes:
+    def _build_event(
+        self, day: date, start_dt: datetime, end_dt: datetime, queue: str
+    ) -> bytes:
         title = f"{self.event_prefix} (Queue {queue})"
         uid = f"poweroutage-{queue}-{day.isoformat()}-{start_dt.strftime('%H%M')}-{end_dt.strftime('%H%M')}"
 
@@ -53,7 +57,9 @@ class AppleCalendarSync:
         cal.add_component(event)
         return cal.to_ical()
 
-    def replace_day_events(self, day: date, queue: str, ranges: List[Tuple[datetime, datetime]]) -> int:
+    def replace_day_events(
+        self, day: date, queue: str, ranges: List[Tuple[datetime, datetime]]
+    ) -> int:
         calendar = self._get_calendar()
 
         title = f"{self.event_prefix} (Queue {queue})"
@@ -82,6 +88,8 @@ class AppleCalendarSync:
                 raise CalendarServiceUnavailable(
                     f"CalDAV service unavailable while syncing date {day.isoformat()}"
                 ) from exc
-            raise CalendarSyncError(f"Failed to sync calendar events: {message}") from exc
+            raise CalendarSyncError(
+                f"Failed to sync calendar events: {message}"
+            ) from exc
 
         return created

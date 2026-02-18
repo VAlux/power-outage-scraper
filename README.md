@@ -30,6 +30,13 @@ Set environment variables:
 - `CALDAV_PASSWORD` (required, iCloud app-specific password)
 - `CALENDAR_NAME` (default: `Power Outage`)
 - `EVENT_PREFIX` (default: `Power outage`)
+- `NOTIFY_EMAIL_TO` (optional, send email when a schedule update is detected for today/tomorrow)
+- `NOTIFY_EMAIL_FROM` (optional, default: `SMTP_USER`)
+- `SMTP_HOST` (required when `NOTIFY_EMAIL_TO` is set)
+- `SMTP_PORT` (default: `587`)
+- `SMTP_USER` (optional for servers allowing anonymous send; otherwise required)
+- `SMTP_PASSWORD` (optional unless SMTP auth is required)
+- `SMTP_USE_TLS` (default: `true`)
 
 ## Run with Docker
 
@@ -66,3 +73,4 @@ docker logs -f poweroutage-scraper
 - Scraping is Chromium/Playwright-based (rendered HTML).
 - Schedule parsing is DOM-based: the parser reads `.power-off__text` blocks and extracts each day from those blocks.
 - If the page contains multiple schedule blocks (for example today and tomorrow), each day is parsed and synced independently.
+- If no events are present for today on the source page, existing outage events for today are removed from the target calendar.

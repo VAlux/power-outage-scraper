@@ -40,17 +40,14 @@ class ParseError(Exception):
     pass
 
 
-
 def _normalize_queue(value: str) -> str:
     return value.strip().strip(".,;: ")
-
 
 
 def _parse_time(value: str) -> time:
     if value == "24:00":
         return time(0, 0)
     return datetime.strptime(value, "%H:%M").time()
-
 
 
 def _pick_update_datetime(text: str, fallback_date: date) -> datetime:
@@ -75,7 +72,6 @@ def _pick_update_datetime(text: str, fallback_date: date) -> datetime:
     return datetime.combine(fallback_date, time(0, 0))
 
 
-
 def _extract_queue_lines(lines: List[str]) -> List[QueueLine]:
     out: List[QueueLine] = []
 
@@ -96,13 +92,13 @@ def _extract_queue_lines(lines: List[str]) -> List[QueueLine]:
     return out
 
 
-
 def _fingerprint(source: str) -> str:
     return hashlib.sha256(source.encode("utf-8")).hexdigest()
 
 
-
-def _snapshot_from_block(applicable_date: date, block_lines: List[str]) -> ScheduleSnapshot:
+def _snapshot_from_block(
+    applicable_date: date, block_lines: List[str]
+) -> ScheduleSnapshot:
     block_text = "\n".join(block_lines)
     updated_at = _pick_update_datetime(block_text, fallback_date=applicable_date)
     queue_lines = _extract_queue_lines(block_lines)
@@ -123,7 +119,6 @@ def _snapshot_from_block(applicable_date: date, block_lines: List[str]) -> Sched
     )
 
 
-
 def _extract_schedule_blocks_from_html(html: str) -> List[tuple[date, List[str]]]:
     soup = BeautifulSoup(html, "html.parser")
     blocks = soup.select(".power-off__text")
@@ -131,9 +126,7 @@ def _extract_schedule_blocks_from_html(html: str) -> List[tuple[date, List[str]]
     out: List[tuple[date, List[str]]] = []
     for block in blocks:
         lines = [
-            line.strip()
-            for line in block.stripped_strings
-            if line and line.strip()
+            line.strip() for line in block.stripped_strings if line and line.strip()
         ]
         if not lines:
             continue
@@ -158,7 +151,6 @@ def _extract_schedule_blocks_from_html(html: str) -> List[tuple[date, List[str]]
         raise ParseError("No '.power-off__text' schedule blocks found in rendered HTML")
 
     return out
-
 
 
 def fetch_snapshot_rendered(
@@ -222,8 +214,9 @@ def fetch_snapshot_rendered(
     return snapshots
 
 
-
-def pick_queue_ranges(snapshot: ScheduleSnapshot, queue: str) -> List[tuple[time, time]]:
+def pick_queue_ranges(
+    snapshot: ScheduleSnapshot, queue: str
+) -> List[tuple[time, time]]:
     target_queue = _normalize_queue(queue)
     selected: List[QueueLine] = []
     for line in snapshot.queue_lines:
